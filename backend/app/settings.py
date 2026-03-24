@@ -3,6 +3,7 @@ Application settings and configuration management.
 """
 
 from pydantic_settings import BaseSettings
+from pydantic import validator
 from typing import List
 from pathlib import Path
 
@@ -16,6 +17,14 @@ class Settings(BaseSettings):
     
     # Database
     DATABASE_URL: str = "postgresql+asyncpg://user:password@localhost:5432/eti"
+
+@validator('DATABASE_URL', pre=True)
+def fix_database_url(cls, v):
+    if v.startswith('postgres://'):
+        v = v.replace('postgres://', 'postgresql+asyncpg://', 1)
+    if v.startswith('postgresql://'):
+        v = v.replace('postgresql://', 'postgresql+asyncpg://', 1)
+    return v
     
     # Redis
     REDIS_URL: str = "redis://localhost:6379/0"
