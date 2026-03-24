@@ -26,7 +26,12 @@ from app.settings import settings
 config = context.config
 
 # Override sqlalchemy.url with our settings (escape % for ConfigParser)
-config.set_main_option("sqlalchemy.url", settings.DATABASE_URL.replace("%", "%%"))
+db_url = settings.DATABASE_URL
+if db_url.startswith('postgres://'):
+    db_url = db_url.replace('postgres://', 'postgresql+asyncpg://', 1)
+if db_url.startswith('postgresql://') and '+asyncpg' not in db_url:
+    db_url = db_url.replace('postgresql://', 'postgresql+asyncpg://', 1)
+config.set_main_option("sqlalchemy.url", db_url.replace("%", "%%"))
 
 # Interpret the config file for Python logging.
 if config.config_file_name is not None:
