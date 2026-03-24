@@ -6,8 +6,8 @@ import Sidebar from '@/components/Sidebar'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'EnergyTracker - Market Intelligence',
-  description: 'Real-time insights on the global energy transition',
+  title: 'Humanitarian News Dashboard',
+  description: 'Real-time humanitarian crisis monitoring for FCDO / HEROS early warning',
 }
 
 export default function RootLayout({

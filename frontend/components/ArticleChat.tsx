@@ -15,18 +15,18 @@ interface ArticleChatProps {
 }
 
 const SUGGESTED_QUESTIONS = [
-  "What is the current state of UK's energy transition?",
-  "Latest renewable energy news in Germany",
-  "USA offshore wind developments",
-  "What are the major clean energy policies in China?",
-  "Tell me about grid modernization in India",
+  "What is the current humanitarian situation in Sudan?",
+  "Latest displacement figures for Syria",
+  "Food security crisis in the Horn of Africa",
+  "What are the major disease outbreaks right now?",
+  "Tell me about humanitarian access in Gaza",
 ]
 
 export default function ArticleChat({ isOpen, onClose, contextCountry }: ArticleChatProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: "Hi! I can help you understand articles, analyze trends, and answer questions about energy topics. What would you like to know?",
+      content: "Hi! I can help you understand articles, analyze trends, and answer questions about humanitarian crises. What would you like to know?",
       timestamp: new Date(),
     }
   ])
@@ -127,7 +127,7 @@ export default function ArticleChat({ isOpen, onClose, contextCountry }: Article
       <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-3 rounded-t-lg flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-          <span className="font-semibold">Energy News Assistant</span>
+          <span className="font-semibold">Humanitarian News Assistant</span>
         </div>
         <button
           onClick={onClose}
@@ -239,7 +239,7 @@ export default function ArticleChat({ isOpen, onClose, contextCountry }: Article
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask about articles or energy topics..."
+            placeholder="Ask about articles or humanitarian topics..."
             className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
             disabled={isLoading}
           />
