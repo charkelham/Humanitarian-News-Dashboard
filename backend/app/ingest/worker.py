@@ -12,13 +12,12 @@ from apscheduler.triggers.interval import IntervalTrigger
 
 from app.ingest.pipeline import run_full_ingestion_pipeline
 
-# Configure logging
+# Configure logging to stdout only (Railway has ephemeral filesystem)
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(),
-        logging.FileHandler('logs/ingestion_worker.log', mode='a'),
     ]
 )
 
