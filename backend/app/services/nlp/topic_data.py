@@ -1,5 +1,4 @@
-pic data · PY
-Copy
+
 
 """
 Topic taxonomy data for humanitarian crisis news tagging.
