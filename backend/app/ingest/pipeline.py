@@ -121,10 +121,15 @@ async def run_full_ingestion_pipeline() -> Dict[str, Any]:
                 logger.info(f"Processing source: {source.name} (type: {source.type})")
                 metrics.sources_processed += 1
                 
+                # Cache source fields to avoid lazy load failures after any DB rollback
+                source_name = source.name
+                source_type = source.type
+                source_id_val = source.id
+                
                 # Fetch articles based on source type
                 parsed_articles = []
                 
-                if source.type == "web_scraper":
+                if source_type == "web_scraper":
                     # Step 1: Scrape website
                     try:
                         scraper = get_scraper(source.rss_url)  # rss_url field stores scraper name
@@ -209,7 +214,7 @@ async def run_full_ingestion_pipeline() -> Dict[str, Any]:
                         else:
                             # Create new article
                             article = Article(
-                                source_id=source.id,
+                                source_id=source_id_val,
                                 title=parsed_article["title"],
                                 url=parsed_article["url"],
                                 hash=parsed_article.get("hash"),
@@ -236,7 +241,7 @@ async def run_full_ingestion_pipeline() -> Dict[str, Any]:
                             
                             # Fallback to source logo if still missing for specific sources
                             if not final_image_url:
-                                if source.name == "NESO":
+                                if source_name == "NESO":
                                     final_image_url = "/source-logos/neso.png"
                                     logger.info(f"  🖼️  Using NESO logo as fallback")
                                 elif 'eia.gov' in article_url.lower():
@@ -260,10 +265,10 @@ async def run_full_ingestion_pipeline() -> Dict[str, Any]:
                         
                         try:
                             # Country tagging - NESO is always UK
-                            if source.name == "NESO":
+                            if source_name == "NESO":
                                 article.country_codes = ["GB"]
                             else:
-                                country_results = country_tagger.tag_article(
+                                country_results, country_metadata = country_tagger.tag_article(
                                     title=article_title,
                                     content=article_content_text
                                 )
