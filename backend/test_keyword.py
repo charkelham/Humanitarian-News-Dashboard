@@ -13,7 +13,10 @@ async def test_keyword_search():
     stopwords = {
         'do', 'we', 'have', 'any', 'articles', 'article', 'on', 'about', 
         'the', 'a', 'an', 'is', 'are', 'tell', 'me', 'what', 'who', 
-        'when', 'where', 'why', 'how', 'can', 'you', 'show', 'find'
+        'when', 'where', 'why', 'how', 'can', 'you','situation', 'latest', 'recent', 'current', 'update', 'updates',
+        'happening', 'going', 'news', 'focus', 'should', 'worst',
+        'crisis', 'crises', 'report', 'reports', 'right', 'now',
+        'fcdo', 'heros', 'please', 'give', 'need', 'information' 'show', 'find'
     }
     
     words = [w.strip('.,!?') for w in question_lower.split()]

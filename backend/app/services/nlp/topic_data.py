@@ -1,186 +1,332 @@
-"""
-Topic taxonomy data for energy transition news tagging.
-"""
+pic data · PY
+Copy
 
+"""
+Topic taxonomy data for humanitarian crisis news tagging.
+ 
+Replaces energy transition topics with crisis type classification.
+Designed for FCDO / HEROS early warning use.
+ 
+Each entry follows the same format as the original:
+    topic_id -> (positive_keywords, negative_keywords)
+ 
+Scoring note: the TopicTagger engine already gives higher weight to:
+  - Title matches (3x)
+  - Longer phrases (phrase_length multiplier)
+So compound phrases like "acute food insecurity" score higher than
+single words like "food", which helps precision.
+"""
+ 
 from typing import Dict, List, Tuple
-
-# Topic taxonomy: topic_id -> (positive_keywords, negative_keywords)
-# Positive keywords: increase score when matched
-# Negative keywords: decrease score when matched (helps differentiate similar topics)
-
+ 
 TOPIC_KEYWORDS: Dict[str, Tuple[List[str], List[str]]] = {
-    "policy_regulation": (
-        # Positive keywords
+ 
+    # ------------------------------------------------------------------ #
+    #  CONFLICT                                                            #
+    # ------------------------------------------------------------------ #
+    "conflict": (
         [
-            "policy", "regulation", "regulatory", "legislation", "law", "mandate",
-            "government", "federal", "state", "national", "parliament", "congress",
-            "directive", "compliance", "subsidy", "subsidies", "tax credit",
-            "incentive", "carbon tax", "emissions trading", "cap and trade",
-            "net zero", "climate target", "climate goal", "climate pledge",
-            "paris agreement", "cop27", "cop28", "cop29", "climate summit",
-            "renewable energy standard", "res", "clean energy standard",
-            "energy policy", "climate policy", "environmental policy",
+            # Armed violence
+            "conflict", "armed conflict", "war", "warfare", "civil war",
+            "fighting", "clashes", "armed clashes", "skirmish",
+            # Actors
+            "militia", "armed group", "rebel", "insurgent", "insurgency",
+            "armed faction", "non-state actor", "paramilitary",
+            # Military actions
+            "airstrike", "air strike", "bombardment", "shelling",
+            "artillery", "offensive", "counteroffensive", "assault",
+            "siege", "blockade", "troops", "military operation",
+            "ceasefire", "peace deal", "peace talks", "peace agreement",
+            # Casualties / impact
+            "killed", "casualties", "civilian deaths", "civilian harm",
+            "massacre", "atrocity", "war crime", "gender-based violence",
+            "sexual violence", "explosive ordnance", "landmine", "iед",
+            # Specific contexts
+            "coup", "coup attempt", "political violence", "communal violence",
+            "intercommunal", "ethnic violence", "sectarian",
         ],
-        # Negative keywords
-        ["technical", "engineering", "manufacturing"],
+        # Negative: reduce score if purely diplomatic/historical
+        ["peace conference", "historical", "anniversary", "museum"],
     ),
-    
-    "power_grid": (
+ 
+    # ------------------------------------------------------------------ #
+    #  DISPLACEMENT                                                        #
+    # ------------------------------------------------------------------ #
+    "displacement": (
         [
-            "grid", "power grid", "electricity grid", "transmission", "distribution",
-            "grid infrastructure", "grid modernization", "smart grid",
-            "interconnection", "interconnector", "grid connection",
-            "transmission line", "power line", "substation",
-            "grid operator", "grid stability", "grid reliability",
-            "grid congestion", "grid capacity", "grid expansion",
-            "energy storage grid", "grid scale", "utility scale",
-            "load balancing", "frequency regulation", "ancillary services",
-            "demand response", "virtual power plant", "vpp",
+            # People on the move
+            "refugee", "refugees", "internally displaced", "idp", "idps",
+            "displaced person", "displaced people", "displaced population",
+            "forced displacement", "forced migration", "mass displacement",
+            "fleeing", "fled", "exodus",
+            # Status / process
+            "asylum seeker", "asylum claim", "stateless", "statelessness",
+            "resettlement", "repatriation", "voluntary return", "returnee",
+            "durable solution",
+            # Locations
+            "refugee camp", "displacement camp", "transit camp",
+            "informal settlement", "collective shelter", "reception centre",
+            # Agencies / frameworks
+            "unhcr", "refugee agency", "refugee convention",
+            "non-refoulement", "protection", "refugee protection",
+            # Scale indicators
+            "million displaced", "thousand displaced", "new displacement",
         ],
-        ["solar panel", "wind turbine", "battery cell"],
+        ["economic migrant", "labour migration", "tourism"],
     ),
-    
-    "renewables_solar": (
+ 
+    # ------------------------------------------------------------------ #
+    #  FAMINE / FOOD INSECURITY                                            #
+    # ------------------------------------------------------------------ #
+    "famine": (
         [
-            "solar", "photovoltaic", "pv", "solar panel", "solar farm",
-            "solar power", "solar energy", "solar project", "solar plant",
-            "solar installation", "rooftop solar", "utility scale solar",
-            "concentrated solar", "csp", "solar thermal",
-            "solar cell", "solar module", "bifacial", "perovskite",
-            "solar capacity", "solar generation", "solar irradiance",
+            # IPC / severity framework terms (high value — use long phrases)
+            "famine", "ipc phase 5", "ipc phase 4", "ipc phase 3",
+            "acute food insecurity", "acute malnutrition",
+            "integrated food security phase classification",
+            "emergency food", "food emergency",
+            # Nutrition
+            "malnutrition", "severe acute malnutrition", "sam",
+            "moderate acute malnutrition", "mam",
+            "global acute malnutrition", "gam",
+            "wasting", "stunting", "undernutrition",
+            "therapeutic feeding", "therapeutic food",
+            "ready to use therapeutic food", "rutf",
+            # Food access
+            "food insecurity", "food crisis", "food shortage",
+            "food access", "food assistance", "food aid",
+            "hunger", "starvation", "food ration",
+            "wfp", "world food programme", "food distribution",
+            # Agricultural
+            "crop failure", "harvest failure", "poor harvest",
+            "livestock loss", "livelihood loss",
+            "food production", "agricultural disruption",
         ],
-        ["wind", "battery", "hydrogen"],
+        ["food festival", "restaurant", "cuisine", "recipe"],
     ),
-    
-    "renewables_wind": (
+ 
+    # ------------------------------------------------------------------ #
+    #  DISEASE OUTBREAK                                                    #
+    # ------------------------------------------------------------------ #
+    "disease_outbreak": (
         [
-            "wind", "wind power", "wind energy", "wind farm", "wind turbine",
-            "wind project", "wind installation", "wind capacity",
-            "onshore wind", "offshore wind", "floating wind",
-            "wind generation", "wind developer", "wind industry",
-            "turbine blade", "nacelle", "wind speed", "capacity factor",
+            # General outbreak language
+            "outbreak", "epidemic", "disease outbreak", "health emergency",
+            "public health emergency", "pheic",
+            # Specific diseases relevant to humanitarian contexts
+            "cholera", "ebola", "marburg", "mpox", "monkeypox",
+            "malaria", "measles", "meningitis", "typhoid",
+            "tuberculosis", "tb", "hepatitis", "dengue",
+            "yellow fever", "plague", "diphtheria",
+            # Response
+            "vaccination", "vaccine", "immunisation", "immunization",
+            "health response", "disease surveillance",
+            "contact tracing", "quarantine", "isolation",
+            "treatment centre", "health facility",
+            # Agencies
+            "who alert", "who declaration", "health cluster",
+            "médecins sans frontières", "msf",
+            # Rates
+            "case fatality", "mortality rate", "morbidity",
+            "infection rate", "transmission",
         ],
-        ["solar", "battery", "hydrogen"],
+        ["chronic disease", "lifestyle", "cancer research", "pharmaceutical profit"],
     ),
-    
-    "storage_batteries": (
+ 
+    # ------------------------------------------------------------------ #
+    #  FLOOD / CYCLONE / NATURAL DISASTER                                  #
+    # ------------------------------------------------------------------ #
+    "natural_disaster": (
         [
-            "battery", "batteries", "energy storage", "battery storage",
-            "lithium ion", "lithium-ion", "li-ion", "solid state battery",
-            "battery cell", "battery pack", "battery system",
-            "battery technology", "battery chemistry", "battery capacity",
-            "battery manufacturer", "battery plant", "gigafactory",
-            "flow battery", "vanadium", "grid scale storage",
-            "stationary storage", "utility scale battery",
-            "charge", "discharge", "cycling", "degradation",
+            # Floods
+            "flood", "flooding", "flash flood", "river flood",
+            "inundation", "dam burst", "riverine flooding",
+            # Storms
+            "cyclone", "hurricane", "typhoon", "tropical storm",
+            "storm surge", "monsoon flooding",
+            # Other disasters
+            "landslide", "mudslide", "avalanche",
+            "drought", "flash drought",
+            # Impact language
+            "disaster response", "disaster relief",
+            "emergency response", "rapid onset",
+            "affected population", "disaster affected",
+            # Agencies / frameworks
+            "ocha", "humanitarian response plan",
+            "emergency declaration", "state of emergency",
+            "ndma", "national disaster",
         ],
-        ["electric vehicle", "ev", "car", "automotive"],
+        ["flood risk modelling", "historical flood", "flood insurance market"],
     ),
-    
-    "hydrogen": (
+ 
+    # ------------------------------------------------------------------ #
+    #  EARTHQUAKE                                                          #
+    # ------------------------------------------------------------------ #
+    "earthquake": (
         [
-            "hydrogen", "h2", "green hydrogen", "blue hydrogen", "grey hydrogen",
-            "hydrogen production", "electrolyzer", "electrolysis",
-            "hydrogen fuel", "hydrogen economy", "hydrogen strategy",
-            "fuel cell", "hydrogen storage", "hydrogen transport",
-            "ammonia", "synthetic fuel", "e-fuel", "power to gas",
-            "hydrogen pipeline", "hydrogen infrastructure",
-        ],
-        ["battery", "solar", "wind"],
-    ),
-    
-    "ev_transport": (
-        [
-            "electric vehicle", "ev", "evs", "electric car", "electric truck",
-            "electric bus", "battery electric vehicle", "bev",
-            "plug-in hybrid", "phev", "hybrid electric",
-            "charging station", "charging infrastructure", "ev charger",
-            "fast charging", "dc fast charging", "level 2 charging",
-            "vehicle to grid", "v2g", "bidirectional charging",
-            "automotive", "automobile", "passenger vehicle",
-            "tesla", "rivian", "lucid", "nio", "byd electric",
-            "ev adoption", "ev sales", "ev market", "ev battery",
-        ],
-        ["stationary storage", "grid scale"],
-    ),
-    
-    "carbon_markets_ccus": (
-        [
-            "carbon capture", "ccs", "ccus", "carbon storage",
-            "carbon sequestration", "direct air capture", "dac",
-            "carbon removal", "carbon credit", "carbon offset",
-            "carbon market", "carbon trading", "carbon price",
-            "emissions reduction", "co2 capture", "carbon dioxide removal",
-            "negative emissions", "carbon neutral", "carbon negative",
-            "voluntary carbon market", "compliance carbon market",
+            "earthquake", "tremor", "seismic", "seismic event",
+            "magnitude", "epicentre", "epicenter",
+            "aftershock", "fault line", "tectonic",
+            "tsunami", "liquefaction",
+            "collapsed building", "building collapse", "rubble",
+            "search and rescue", "urban search and rescue", "usar",
         ],
         [],
     ),
-    
-    "oil_gas_transition": (
+ 
+    # ------------------------------------------------------------------ #
+    #  HUMANITARIAN RESPONSE / AID OPERATIONS                             #
+    # ------------------------------------------------------------------ #
+    "humanitarian_response": (
         [
-            "oil and gas", "fossil fuel", "petroleum", "natural gas",
-            "oil company", "gas company", "oil major", "supermajor",
-            "bp", "shell", "exxon", "chevron", "totalenergies", "equinor",
-            "energy transition", "diversification", "renewable transition",
-            "fossil fuel phase out", "stranded assets",
-            "oil production", "gas production", "upstream", "downstream",
-            "refinery", "petrochemical", "lng", "liquefied natural gas",
+            # Operations
+            "humanitarian response", "humanitarian operation",
+            "humanitarian aid", "humanitarian assistance",
+            "relief operation", "aid delivery", "aid access",
+            "humanitarian corridor", "aid convoy",
+            "humanitarian worker", "aid worker",
+            # Funding
+            "humanitarian funding", "humanitarian appeal",
+            "flash appeal", "cap", "consolidated appeal",
+            "underfunded", "funding gap", "donor",
+            "ocha", "unocha",
+            # Coordination
+            "cluster coordination", "inter-agency",
+            "humanitarian coordinator", "resident coordinator",
+            "humanitarian country team", "hct",
+            # Access
+            "humanitarian access", "access constraints",
+            "aid blockade", "aid obstruction",
+            "humanitarian law", "ihl", "international humanitarian law",
+            # Key NGOs / agencies
+            "icrc", "red cross", "red crescent",
+            "world food programme", "wfp", "unicef", "unhcr",
+            "iom", "international organization for migration",
+            "oxfam", "save the children", "care international",
+            "international rescue committee", "irc",
         ],
-        ["renewable only", "clean energy only"],
+        ["development aid", "development finance", "oda statistics"],
     ),
-    
-    "corporate_finance": (
+ 
+    # ------------------------------------------------------------------ #
+    #  PROTECTION / HUMAN RIGHTS                                           #
+    # ------------------------------------------------------------------ #
+    "protection": (
         [
-            "investment", "financing", "funding", "capital",
-            "merger", "acquisition", "m&a", "deal", "transaction",
-            "ipo", "initial public offering", "private equity", "venture capital",
-            "stock", "share price", "valuation", "market cap",
-            "earnings", "revenue", "profit", "loss", "financial results",
-            "investor", "shareholder", "dividend", "bond", "debt",
-            "fundraising", "capital raise", "series a", "series b",
-            "billion dollar", "million dollar", "usd", "eur",
+            "protection", "civilian protection", "civilian harm",
+            "human rights", "human rights violation", "human rights abuse",
+            "accountability", "impunity",
+            "child protection", "child soldier", "recruitment of children",
+            "gender based violence", "gbv", "sexual exploitation",
+            "protection monitoring", "protection cluster",
+            "detention", "arbitrary detention", "torture",
+            "enforced disappearance", "extrajudicial killing",
+            "rule of law", "transitional justice",
+            "humanitarian principles", "neutrality", "impartiality",
         ],
         [],
     ),
-    
-    "critical_minerals_supply_chain": (
+ 
+    # ------------------------------------------------------------------ #
+    #  EARLY WARNING / ANALYSIS                                            #
+    # ------------------------------------------------------------------ #
+    "early_warning": (
         [
-            "lithium", "cobalt", "nickel", "rare earth", "graphite",
-            "copper", "manganese", "vanadium",
-            "mining", "mineral", "supply chain", "raw material",
-            "critical mineral", "strategic mineral",
-            "mineral processing", "refining", "smelting",
-            "mineral exploration", "mineral deposit", "mineral reserves",
-            "supply security", "supply risk", "geopolitical risk",
-            "mineral demand", "mineral shortage", "mineral price",
+            # Early warning systems and frameworks
+            "early warning", "early warning system", "risk analysis",
+            "crisis analysis", "situation analysis", "needs assessment",
+            "humanitarian needs overview", "hno",
+            "inform score", "inform risk",
+            "fews net", "famine early warning",
+            "ipc", "ipc analysis", "ipc classification",
+            # Monitoring
+            "sentinel surveillance", "monitoring and evaluation",
+            "situation report", "sitrep", "flash update",
+            "crisis monitoring", "conflict monitoring",
+            "displacement tracking", "dtm",
+            # Indicators
+            "leading indicator", "risk indicator", "trigger",
+            "escalation", "deterioration", "deteriorating situation",
+            "crisis trajectory",
         ],
         [],
     ),
 }
-
-
-# Topic display names
+ 
+ 
+# Display names shown in the dashboard UI
 TOPIC_NAMES: Dict[str, str] = {
-    "policy_regulation": "Policy & Regulation",
-    "power_grid": "Power Grid & Infrastructure",
-    "renewables_solar": "Solar Energy",
-    "renewables_wind": "Wind Energy",
-    "storage_batteries": "Battery Storage",
-    "hydrogen": "Hydrogen & Fuel Cells",
-    "ev_transport": "Electric Vehicles & Transport",
-    "carbon_markets_ccus": "Carbon Markets & CCUS",
-    "oil_gas_transition": "Oil & Gas Transition",
-    "corporate_finance": "Corporate & Finance",
-    "critical_minerals_supply_chain": "Critical Minerals & Supply Chain",
+    "conflict":               "Conflict & Violence",
+    "displacement":           "Displacement & Refugees",
+    "famine":                 "Food Insecurity & Famine",
+    "disease_outbreak":       "Disease Outbreak",
+    "natural_disaster":       "Natural Disaster",
+    "earthquake":             "Earthquake",
+    "humanitarian_response":  "Humanitarian Response",
+    "protection":             "Protection & Human Rights",
+    "early_warning":          "Early Warning & Analysis",
 }
-
-
+ 
+# Severity escalation rules:
+# If an article matches these COMBINATIONS of topics, escalate severity.
+# Used in the API layer, not here — kept here for reference.
+SEVERITY_ESCALATION_RULES = [
+    ({"conflict", "famine"},            "CRITICAL"),
+    ({"conflict", "disease_outbreak"},  "CRITICAL"),
+    ({"displacement", "famine"},        "CRITICAL"),
+    ({"displacement", "disease_outbreak"}, "CRITICAL"),
+    ({"famine", "disease_outbreak"},    "CRITICAL"),
+]
+ 
+# Single-topic default severities
+TOPIC_DEFAULT_SEVERITY: Dict[str, str] = {
+    "conflict":              "HIGH",
+    "displacement":          "HIGH",
+    "famine":                "HIGH",
+    "disease_outbreak":      "MEDIUM",
+    "natural_disaster":      "MEDIUM",
+    "earthquake":            "HIGH",
+    "humanitarian_response": "MEDIUM",
+    "protection":            "MEDIUM",
+    "early_warning":         "LOW",
+}
+ 
+ 
 def get_all_topics() -> List[str]:
     """Get list of all topic IDs."""
     return list(TOPIC_KEYWORDS.keys())
-
-
+ 
+ 
 def get_topic_name(topic_id: str) -> str:
     """Get display name for topic."""
     return TOPIC_NAMES.get(topic_id, topic_id)
+ 
+ 
+def compute_severity(topic_ids: List[str]) -> str:
+    """
+    Compute article severity from matched topic IDs.
+ 
+    Checks compound escalation rules first, then falls back
+    to the highest single-topic default.
+ 
+    Args:
+        topic_ids: List of matched topic IDs
+ 
+    Returns:
+        Severity string: CRITICAL | HIGH | MEDIUM | LOW
+    """
+    topic_set = set(topic_ids)
+ 
+    # Check compound escalation rules
+    for rule_topics, severity in SEVERITY_ESCALATION_RULES:
+        if rule_topics.issubset(topic_set):
+            return severity
+ 
+    # Fall back to highest single-topic severity
+    order = ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
+    for level in order:
+        for topic in topic_ids:
+            if TOPIC_DEFAULT_SEVERITY.get(topic) == level:
+                return level
+ 
+    return "LOW"
