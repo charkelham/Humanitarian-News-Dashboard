@@ -9,12 +9,15 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 const topics = [
   { id: 'all', label: 'All' },
-  { id: 'renewables', label: 'Renewable Energy' },
-  { id: 'oil_gas', label: 'Oil & Gas' },
-  { id: 'nuclear', label: 'Nuclear' },
-  { id: 'ev_transport', label: 'Electric Vehicles' },
-  { id: 'policy', label: 'Energy Policy' },
-  { id: 'climate', label: 'Climate & Environment' },
+  { id: 'conflict', label: 'Conflict' },
+  { id: 'displacement', label: 'Displacement' },
+  { id: 'famine', label: 'Famine & Food Crisis' },
+  { id: 'disease_outbreak', label: 'Disease Outbreak' },
+  { id: 'natural_disaster', label: 'Natural Disaster' },
+  { id: 'earthquake', label: 'Earthquake' },
+  { id: 'protection', label: 'Protection' },
+  { id: 'humanitarian_access', label: 'Humanitarian Access' },
+  { id: 'funding_coordination', label: 'Funding & Coordination' },
 ]
 
 const countries = [
@@ -35,31 +38,27 @@ const countries = [
 ]
 
 const topicColorMap: { [key: string]: string } = {
-  'renewables_solar': 'bg-green-600',
-  'renewables_wind': 'bg-green-600',
-  'renewables': 'bg-green-600',
-  'oil_gas': 'bg-gray-800',
-  'nuclear': 'bg-orange-600',
-  'ev_transport': 'bg-blue-600',
-  'policy': 'bg-purple-600',
-  'climate': 'bg-emerald-600',
-  'hydrogen': 'bg-cyan-600',
-  'storage_batteries': 'bg-blue-600',
-  'power_grid': 'bg-indigo-600',
+  'conflict': 'bg-red-700',
+  'displacement': 'bg-orange-600',
+  'famine': 'bg-yellow-600',
+  'disease_outbreak': 'bg-purple-600',
+  'natural_disaster': 'bg-blue-600',
+  'earthquake': 'bg-gray-700',
+  'protection': 'bg-pink-600',
+  'humanitarian_access': 'bg-teal-600',
+  'funding_coordination': 'bg-indigo-600',
 }
 
 const topicLabelMap: { [key: string]: string } = {
-  'renewables_solar': 'Renewable Energy',
-  'renewables_wind': 'Renewable Energy',
-  'renewables': 'Renewable Energy',
-  'oil_gas': 'Oil & Gas',
-  'nuclear': 'Nuclear',
-  'ev_transport': 'Electric Vehicles',
-  'policy': 'Energy Policy',
-  'climate': 'Climate & Environment',
-  'hydrogen': 'Renewable Energy',
-  'storage_batteries': 'Electric Vehicles',
-  'power_grid': 'Energy Policy',
+  'conflict': 'Conflict',
+  'displacement': 'Displacement',
+  'famine': 'Famine & Food Crisis',
+  'disease_outbreak': 'Disease Outbreak',
+  'natural_disaster': 'Natural Disaster',
+  'earthquake': 'Earthquake',
+  'protection': 'Protection',
+  'humanitarian_access': 'Humanitarian Access',
+  'funding_coordination': 'Funding & Coordination',
 }
 
 export default function TopicsPage() {
@@ -72,19 +71,10 @@ export default function TopicsPage() {
     fetcher
   )
 
-  // Filter articles by selected topic, country, and exclude Carbon Brief
+  // Filter articles by selected topic and country
   const filteredArticles = data?.items?.filter((article: any) => {
-    // Exclude Carbon Brief articles
-    if (article.source_name && article.source_name.toLowerCase().includes('carbon brief')) {
-      return false;
-    }
     // Topic filter
-    const topicMatch = selectedTopic === 'all' || article.topic_tags?.some((tag: string) => {
-      if (selectedTopic === 'renewables') {
-        return tag.includes('renewables') || tag.includes('solar') || tag.includes('wind')
-      }
-      return tag.includes(selectedTopic)
-    })
+    const topicMatch = selectedTopic === 'all' || article.topic_tags?.some((tag: string) => tag === selectedTopic)
     // Country filter
     const countryMatch = selectedCountry === 'all' || article.country_codes?.includes(selectedCountry)
     return topicMatch && countryMatch;
@@ -97,7 +87,7 @@ export default function TopicsPage() {
   }
 
   const getTopicLabel = (tags: string[]) => {
-    if (!tags || tags.length === 0) return 'Energy'
+    if (!tags || tags.length === 0) return 'General'
     const firstTag = tags[0]
     return topicLabelMap[firstTag] || firstTag.replace(/_/g, ' ')
   }

@@ -1,7 +1,7 @@
 """
 AI Brief Generation Service
 
-Generates country-specific energy briefs from ingested articles.
+Generates country-specific humanitarian situation briefs from ingested articles.
 """
 
 from typing import List, Optional
@@ -223,23 +223,23 @@ URL: {article.url}
         
         filters_text = f" ({', '.join(filter_desc)})" if filter_desc else ""
         
-        system_prompt = f"""You are an energy market analyst writing in the editorial style of Modo Energy, synthesizing recent developments from news articles{filters_text}.
+        system_prompt = f"""You are a humanitarian analyst producing situation briefs for FCDO / HEROS early warning, synthesizing recent developments from news articles{filters_text}.
 
 Writing Principles:
 - Maintain a neutral, analytical tone throughout
-- Focus on developments, policy decisions, project announcements, and capacity changes
-- Explain outcomes through market structure, policy incentives, and physical constraints
-- Avoid hype, advocacy, or speculative language
-- Make uncertainty explicit when discussing future implications
+- Focus on crisis developments, displacement figures, access constraints, funding gaps, and protection concerns
+- Explain outcomes through conflict dynamics, climate factors, and humanitarian system capacity
+- Avoid advocacy or speculative language
+- Make uncertainty explicit when discussing projections or unverified reports
 
 Opening Requirement:
-Begin with the most significant development or emerging trend from the articles (e.g., policy change, major project announcement, capacity milestone, or market shift).
+Begin with the most significant development or emerging trend from the articles (e.g., escalation in violence, new displacement wave, famine declaration, disease outbreak, or funding shortfall).
 
 Structure:
 1. Lead with the key development or pattern
 2. Explain the underlying drivers and context
-3. Discuss implications for market participants, asset deployment, or system operation
-4. Identify what comes next and the variables to monitor
+3. Discuss implications for affected populations and humanitarian response
+4. Identify what comes next and the key indicators to monitor
 
 Style Constraints:
 - Short to medium-length sentences
@@ -255,9 +255,9 @@ Source Handling:
 - Do not mention "the articles" or "according to sources" - write as direct analysis
 
 Output:
-- Write for energy market professionals
-- Assume familiarity with power markets, renewables, storage, and policy frameworks
-- Focus on what the news means for market participants and system development
+- Write for humanitarian professionals and policy makers
+- Assume familiarity with humanitarian coordination systems (clusters, HRPs, HNOs), IPC phases, and protection frameworks
+- Focus on what the news means for affected populations and response actors
 
 Here are the articles to analyze:
 

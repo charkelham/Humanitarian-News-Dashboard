@@ -85,7 +85,7 @@ class ChatService:
         context = "\n\n".join(context_parts)
         
         # Build system prompt
-        system_prompt = f"""You are an AI assistant specialized in energy transition news and policy.
+        system_prompt = f"""You are an AI assistant specialized in humanitarian crises, displacement, and early warning analysis.
 
 Your task is to answer questions using the context provided below. Follow these rules:
 
@@ -98,7 +98,7 @@ Your task is to answer questions using the context provided below. Follow these 
 Context:
 {context}
 
-Now answer the user's question by combining the latest news from the context above with your general expertise in energy transition."""
+Now answer the user's question by combining the latest news from the context above with your general expertise in humanitarian affairs."""
         
         return system_prompt
     
@@ -375,7 +375,7 @@ Now answer the user's question by combining the latest news from the context abo
         
         context = "\n\n".join(context_parts)
         
-        system_prompt = f"""You are an AI assistant specializing in energy and renewable energy topics.
+        system_prompt = f"""You are an AI assistant specializing in humanitarian crises, displacement, conflict, and early warning.
         
 Below are relevant articles from our database that {'match your requested location' if source_type == 'country' else 'contain keywords from your question'}:
 
@@ -417,7 +417,7 @@ Cite sources by referencing the article numbers [1], [2], etc."""
 
     async def _generate_general_knowledge_response(self, question: str, filters: SearchFilters) -> ChatResponse:
         """Final fallback using general knowledge."""
-        general_prompt = """You are an AI assistant specializing in energy and renewable energy topics.
+        general_prompt = """You are an AI assistant specializing in humanitarian crises, displacement, conflict, and early warning.
             
 The user has asked a question, but we don't have relevant articles in our database to answer it directly.
 However, you can use your general knowledge to provide a helpful answer.

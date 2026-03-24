@@ -18,9 +18,9 @@ export default function Sidebar() {
       <div className="p-6 border-b border-gray-200">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold">
-            E
+            H
           </div>
-          <span className="text-lg font-bold text-gray-900">EnergyTracker</span>
+          <span className="text-lg font-bold text-gray-900">HumanitarianTracker</span>
         </div>
       </div>
 
