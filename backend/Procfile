@@ -1,2 +1,2 @@
-release: alembic upgrade head && python scripts/add_neso_source.py
+release: alembic upgrade head && python scripts/add_neso_source.py && python scripts/update_rss_sources.py
 web: sh -c "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers --forwarded-allow-ips='*'"
