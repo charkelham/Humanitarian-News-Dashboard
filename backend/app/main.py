@@ -1,5 +1,5 @@
 """
-FastAPI application entry point for ETI backend.
+FastAPI application entry point for SENTINEL humanitarian intelligence backend.
 """
 
 from fastapi import FastAPI
@@ -8,15 +8,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api import ingestion, chat, articles, countries, sources, briefs, stats, admin
 
 app = FastAPI(
-    title="Energy Transition Intelligence API",
-    description="RSS aggregation and RAG chatbot for energy transition news",
-    version="0.1.0"
+    title="Humanitarian News Dashboard",
+    description="Early warning RSS ingestion, crisis classification and RAG chatbot for FCDO/HEROS humanitarian monitoring",
+    version="1.0.0"
 )
 
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -37,7 +37,7 @@ app.include_router(admin.router)
 @app.get("/")
 async def root():
     """Health check endpoint."""
-    return {"status": "healthy", "service": "ETI API"}
+    return {"status": "healthy", "service": "SENTINEL API"}
 
 
 @app.get("/health")
@@ -45,5 +45,6 @@ async def health():
     """Detailed health check."""
     return {
         "status": "healthy",
-        "version": "0.1.0"
+        "service": "SENTINEL Humanitarian Intelligence",
+        "version": "1.0.0"
     }

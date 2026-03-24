@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import useSWR from 'swr'
-import Image from 'next/image'
 import { formatTimeAgo } from '@/utils/time'
 import ArticleChat from '@/components/ArticleChat'
 
@@ -10,7 +9,7 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 export default function Dashboard() {
   const [days, setDays] = useState(7)
-  const [selectedCountry, setSelectedCountry] = useState('US')
+  const [selectedCountry, setSelectedCountry] = useState('SD')
   const [loadingBrief, setLoadingBrief] = useState(false)
   const [brief, setBrief] = useState<any>(null)
   const [isChatOpen, setIsChatOpen] = useState(false)
@@ -66,9 +65,9 @@ export default function Dashboard() {
       <div className="bg-white border-b border-gray-200 px-8 py-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Market Overview</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Humanitarian News Dashboard</h1>
             <p className="text-gray-500 text-sm mt-0.5">
-              Real-time insights on the global energy transition.
+              Real-time humanitarian crisis monitoring for FCDO / HEROS early warning.
             </p>
           </div>
           <div className="flex items-center gap-4">
@@ -77,19 +76,19 @@ export default function Dashboard() {
               onChange={(e) => setSelectedCountry(e.target.value)}
               className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="US">United States</option>
-              <option value="GB">United Kingdom</option>
-              <option value="DE">Germany</option>
-              <option value="CN">China</option>
-              <option value="IN">India</option>
-              <option value="AU">Australia</option>
-              <option value="IT">Italy</option>
-              <option value="PL">Poland</option>
-              <option value="ES">Spain</option>
-              <option value="NO">Norway</option>
-              <option value="JP">Japan</option>
-              <option value="KR">South Korea</option>
-              <option value="CA">Canada</option>
+              <option value="SD">Sudan</option>
+              <option value="SS">South Sudan</option>
+              <option value="YE">Yemen</option>
+              <option value="PS">Gaza / Palestine</option>
+              <option value="CD">DR Congo</option>
+              <option value="ET">Ethiopia</option>
+              <option value="SO">Somalia</option>
+              <option value="AF">Afghanistan</option>
+              <option value="HT">Haiti</option>
+              <option value="MM">Myanmar</option>
+              <option value="ML">Mali</option>
+              <option value="UA">Ukraine</option>
+              <option value="SY">Syria</option>
             </select>
             <select
               value={days}
@@ -109,7 +108,7 @@ export default function Dashboard() {
         {/* AI Daily Briefing */}
         <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="font-bold text-gray-900 text-lg">AI Daily Briefing</h2>
+            <h2 className="font-bold text-gray-900 text-lg">AI Situation Brief</h2>
             <button
               onClick={generateBrief}
               disabled={loadingBrief}
@@ -122,35 +121,12 @@ export default function Dashboard() {
           {loadingBrief ? (
             <div className="text-center py-8">
               <div className="animate-pulse text-gray-500">
-                Analyzing {selectedCountry} articles with AI... (10-15 seconds)
+                Analysing humanitarian signals for {selectedCountry}... (10-15 seconds)
               </div>
             </div>
           ) : brief?.content ? (
             <div>
-              {/* Article Images Gallery */}
-              {brief.articles && brief.articles.length > 0 && (
-                <div className="grid grid-cols-5 gap-2 mb-6">
-                  {brief.articles.slice(0, 5).map((article: any) => (
-                    <div key={article.id} className="relative h-24 rounded-lg overflow-hidden group">
-                      <img
-                        src={article.image_url || (article.source_name === 'NESO' ? '/source-logos/neso.png' : '/source-logos/eia.jpg')}
-                        alt={article.title}
-                        className="w-full h-full object-cover transition-transform group-hover:scale-110"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement
-                          const fallback = article.source_name === 'NESO' ? '/source-logos/neso.png' : '/source-logos/eia.jpg'
-                          if (target.src !== window.location.origin + fallback) {
-                            target.src = fallback
-                          }
-                        }}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Brief Content with Rich Styling */}
+              {/* Brief Content */}
               <div className="prose prose-lg max-w-none">
                 <style jsx>{`
                   .prose h1 { color: #1f2937; font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; border-left: 4px solid #2563eb; padding-left: 1rem; }
@@ -167,28 +143,19 @@ export default function Dashboard() {
               {/* Footer with metadata */}
               <div className="mt-6 pt-4 border-t border-gray-200 flex items-center justify-between">
                 <div className="text-xs text-gray-400">
-                  Generated: {brief.generated_at || 'Just now'} • {brief.article_count || 0} articles analyzed
+                  Generated: {brief.generated_at || 'Just now'} • {brief.article_count || 0} articles analysed
                 </div>
                 {brief.articles && brief.articles.length > 0 && (
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-gray-500">Sources:</span>
-                    <div className="flex -space-x-2">
-                      {brief.articles.slice(0, 3).map((article: any, idx: number) => (
-                        <div
+                    <div className="flex gap-1">
+                      {[...new Set(brief.articles.slice(0, 5).map((a: any) => a.source_name))].map((source: any, idx: number) => (
+                        <span
                           key={idx}
-                          className="w-8 h-8 rounded-full bg-gray-200 border-2 border-white overflow-hidden"
-                          title={article.source_name}
+                          className="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full border border-blue-100"
                         >
-                          <img
-                            src={article.image_url || (article.source_name === 'NESO' ? '/source-logos/neso.png' : '/source-logos/eia.jpg')}
-                            alt=""
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement
-                              target.src = article.source_name === 'NESO' ? '/source-logos/neso.png' : '/source-logos/eia.jpg'
-                            }}
-                          />
-                        </div>
+                          {source}
+                        </span>
                       ))}
                     </div>
                   </div>
@@ -200,7 +167,9 @@ export default function Dashboard() {
               {brief.error}
             </div>
           ) : (
-            <p className="text-gray-500 text-sm">Click \"Generate Brief\" to create an AI-powered summary of recent {selectedCountry} energy developments.</p>
+            <p className="text-gray-500 text-sm">
+              Click "Generate Brief" to create an AI-powered humanitarian situation brief for the selected country.
+            </p>
           )}
         </div>
 
@@ -214,29 +183,23 @@ export default function Dashboard() {
                 rel="noopener noreferrer"
                 className="block bg-white rounded-xl shadow-sm overflow-hidden h-full hover:shadow-lg transition-shadow"
               >
-                <div className="h-64 bg-gradient-to-br from-gray-100 to-gray-200 relative overflow-hidden">
-                  <img
-                    src={featuredStory.image_url || (featuredStory.source_name === 'NESO' ? '/source-logos/neso.png' : '/source-logos/eia.jpg')}
-                    alt={featuredStory.title}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement
-                      const fallback = featuredStory.source_name === 'NESO' ? '/source-logos/neso.png' : '/source-logos/eia.jpg'
-                      if (target.src !== window.location.origin + fallback) {
-                        target.src = fallback
-                      }
-                    }}
-                  />
-                </div>
                 <div className="p-5">
                   <div className="flex items-center gap-2 text-xs mb-3">
-                    <span className="font-bold text-orange-500 uppercase">
+                    <span className="font-bold text-red-600 uppercase">
                       {featuredStory.source_name}
                     </span>
                     <span className="text-gray-400">•</span>
                     <span className="text-gray-500">
                       {formatTimeAgo(featuredStory.published_at)}
                     </span>
+                    {featuredStory.topic_tags?.[0] && (
+                      <>
+                        <span className="text-gray-400">•</span>
+                        <span className="bg-red-50 text-red-700 px-2 py-0.5 rounded-full border border-red-100 uppercase text-xs font-medium">
+                          {featuredStory.topic_tags[0].replace(/_/g, ' ')}
+                        </span>
+                      </>
+                    )}
                   </div>
                   <h2 className="text-xl font-bold text-gray-900 mb-3 leading-tight">
                     {featuredStory.title}
@@ -244,18 +207,26 @@ export default function Dashboard() {
                   <p className="text-gray-600 text-sm leading-relaxed">
                     {featuredStory.summary}
                   </p>
+                  {featuredStory.country_codes?.length > 0 && (
+                    <div className="mt-4 flex gap-2 flex-wrap">
+                      {featuredStory.country_codes.map((code: string) => (
+                        <span key={code} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">
+                          {code}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </a>
             ) : (
-              <div className="bg-gray-100 rounded-lg h-full flex items-center justify-center">
-                <div className="text-gray-400 text-sm">Loading...</div>
+              <div className="bg-gray-100 rounded-lg h-full flex items-center justify-center min-h-48">
+                <div className="text-gray-400 text-sm">No featured story available — try running ingestion</div>
               </div>
             )}
           </div>
 
-          {/* Right Sidebar */}
+          {/* Right Sidebar — Latest Updates */}
           <div className="space-y-6">
-            {/* Latest Updates */}
             <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="font-bold text-gray-900 text-sm">Latest Updates</h3>
@@ -264,7 +235,7 @@ export default function Dashboard() {
                 </a>
               </div>
               <div className="space-y-3">
-                {updates?.items?.slice(0, 3).map((item: any) => (
+                {updates?.items?.slice(0, 5).map((item: any) => (
                   <a
                     key={item.id}
                     href={item.url}
@@ -272,21 +243,6 @@ export default function Dashboard() {
                     rel="noopener noreferrer"
                     className="flex gap-3 group"
                   >
-                    <div className="w-12 h-12 bg-gray-100 rounded flex-shrink-0 overflow-hidden relative">
-                      {item.image_url ? (
-                        <img
-                          src={item.image_url}
-                          alt=""
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement
-                            target.style.display = 'none'
-                          }}
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300" />
-                      )}
-                    </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="text-xs font-medium text-gray-900 line-clamp-2 group-hover:text-blue-600">
                         {item.title}
@@ -297,11 +253,32 @@ export default function Dashboard() {
                     </div>
                   </a>
                 ))}
+                {!updates?.items?.length && (
+                  <p className="text-xs text-gray-400">No articles yet — run ingestion first</p>
+                )}
               </div>
             </div>
+
+            {/* Crisis type breakdown */}
+            {topicBreakdown?.topics?.length > 0 && (
+              <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
+                <h3 className="font-bold text-gray-900 text-sm mb-3">Crisis Types</h3>
+                <div className="space-y-2">
+                  {topicBreakdown.topics.slice(0, 5).map((topic: any) => (
+                    <div key={topic.topic} className="flex items-center justify-between">
+                      <span className="text-xs text-gray-600 capitalize">
+                        {topic.topic.replace(/_/g, ' ')}
+                      </span>
+                      <span className="text-xs font-medium text-gray-900">{topic.count}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
+
       {/* Floating Chat Button */}
       <button
         onClick={() => setIsChatOpen(!isChatOpen)}
