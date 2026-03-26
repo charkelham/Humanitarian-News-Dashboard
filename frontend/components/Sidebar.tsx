@@ -13,14 +13,14 @@ export default function Sidebar() {
   ]
 
   return (
-    <aside className="w-56 bg-white border-r border-gray-200 flex flex-col">
+    <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
       {/* Logo */}
       <div className="p-6 border-b border-gray-200">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold">
             H
           </div>
-          <span className="text-lg font-bold text-gray-900">HumanitarianTracker</span>
+          <span className="text-lg font-bold text-gray-900 whitespace-nowrap">HumanitarianTracker</span>
         </div>
       </div>
 
