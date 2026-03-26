@@ -20,7 +20,7 @@ export default function Sidebar() {
           <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold">
             H
           </div>
-          <span className="text-lg font-bold text-gray-900 whitespace-nowrap">HumanitarianTracker</span>
+          <span className="text-sm font-bold text-gray-900 leading-tight">Humanitarian<br/>Tracker</span>
         </div>
       </div>
 
