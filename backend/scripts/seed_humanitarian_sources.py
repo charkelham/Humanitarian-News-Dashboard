@@ -1,12 +1,20 @@
 """
-Seed script: replace energy transition RSS sources with humanitarian feeds.
+Seed script: populate the database with humanitarian RSS sources.
 
-Run this once after deploying to clear out energy sources and add
-the humanitarian feeds needed for SENTINEL.
+Safe to re-run at any time — by default it performs an upsert by name, so
+sources that already exist in the DB are skipped.  Only new sources (those
+whose name does not yet exist) are inserted.
+
+To add new sources in the future, simply append them to HUMANITARIAN_SOURCES
+and re-run this script; it will skip any source whose name already exists in
+the DB and only insert the new ones.
 
 Usage:
     cd backend
     python scripts/seed_humanitarian_sources.py
+
+    # To wipe all existing sources and re-seed from scratch:
+    python scripts/seed_humanitarian_sources.py --reset
 
 Or with Poetry:
     poetry run python scripts/seed_humanitarian_sources.py
@@ -14,6 +22,7 @@ Or with Poetry:
 
 import asyncio
 import logging
+import sys
 from sqlalchemy import delete, select
 from app.db.session import AsyncSessionLocal
 from app.db.models import Source
@@ -137,39 +146,146 @@ HUMANITARIAN_SOURCES = [
         "tier": 2,
         "enabled": True,
     },
+
+    # ── More UN / intergovernmental ──────────────────────────────────────
+    {
+        "name": "IOM",
+        "rss_url": "https://www.iom.int/rss/news.xml",
+        "type": "rss",
+        "tier": 1,
+        "enabled": True,
+    },
+    {
+        "name": "FAO",
+        "rss_url": "https://www.fao.org/news/rss-feed/en/",
+        "type": "rss",
+        "tier": 1,
+        "enabled": True,
+    },
+    {
+        "name": "WHO – Emergencies",
+        "rss_url": "https://www.who.int/rss-feeds/news-english.xml",
+        "type": "rss",
+        "tier": 1,
+        "enabled": True,
+    },
+
+    # ── More NGOs ─────────────────────────────────────────────────────────
+    {
+        "name": "Save the Children",
+        "rss_url": "https://www.savethechildren.net/rss.xml",
+        "type": "rss",
+        "tier": 2,
+        "enabled": True,
+    },
+    {
+        "name": "NRC (Norwegian Refugee Council)",
+        "rss_url": "https://www.nrc.no/rss/",
+        "type": "rss",
+        "tier": 2,
+        "enabled": True,
+    },
+    {
+        "name": "Human Rights Watch",
+        "rss_url": "https://www.hrw.org/rss/news.xml",
+        "type": "rss",
+        "tier": 2,
+        "enabled": True,
+    },
+    {
+        "name": "Amnesty International",
+        "rss_url": "https://www.amnesty.org/en/feed/",
+        "type": "rss",
+        "tier": 2,
+        "enabled": True,
+    },
+    {
+        "name": "Care International",
+        "rss_url": "https://www.care-international.org/rss.xml",
+        "type": "rss",
+        "tier": 2,
+        "enabled": True,
+    },
+    {
+        "name": "World Vision",
+        "rss_url": "https://www.wvi.org/rss.xml",
+        "type": "rss",
+        "tier": 2,
+        "enabled": True,
+    },
+
+    # ── Analysis / early warning ──────────────────────────────────────────
+    {
+        "name": "ReliefWeb – Analysis",
+        "rss_url": "https://reliefweb.int/rss.xml/resources/assessment",
+        "type": "rss",
+        "tier": 1,
+        "enabled": True,
+    },
+    {
+        "name": "IFRC",
+        "rss_url": "https://www.ifrc.org/rss/news.xml",
+        "type": "rss",
+        "tier": 1,
+        "enabled": True,
+    },
+    {
+        "name": "UN News – Humanitarian",
+        "rss_url": "https://news.un.org/feed/subscribe/en/news/topic/humanitarian-aid/feed/rss.xml",
+        "type": "rss",
+        "tier": 1,
+        "enabled": True,
+    },
+    {
+        "name": "Al Jazeera – Middle East",
+        "rss_url": "https://www.aljazeera.com/xml/rss/all.xml",
+        "type": "rss",
+        "tier": 2,
+        "enabled": True,
+    },
+    {
+        "name": "Voice of America – Africa",
+        "rss_url": "https://www.voanews.com/api/epiqq-voa/_ygdqdrzt",
+        "type": "rss",
+        "tier": 2,
+        "enabled": True,
+    },
 ]
 
 
 async def seed():
-    """Remove all existing sources and insert humanitarian feeds."""
+    """Upsert humanitarian sources by name (insert new, skip existing).
+
+    Pass --reset on the command line to wipe all existing sources first and
+    re-seed from scratch.
+    """
+    reset_mode = "--reset" in sys.argv
+
     async with AsyncSessionLocal() as db:
 
         # Show what's currently in the DB
         existing = await db.execute(select(Source))
         current = existing.scalars().all()
-        logger.info(f"Found {len(current)} existing sources:")
-        for s in current:
-            logger.info(f"  [{s.id}] {s.name} — {s.rss_url}")
+        logger.info(f"Found {len(current)} existing sources in DB.")
 
-        # Confirm before deleting
-        if current:
-            confirm = input(
-                f"\nThis will DELETE all {len(current)} existing sources "
-                f"and replace them with {len(HUMANITARIAN_SOURCES)} humanitarian feeds.\n"
-                f"Type 'yes' to continue: "
-            ).strip().lower()
-
-            if confirm != "yes":
-                logger.info("Aborted.")
-                return
-
-            # Delete all existing sources
+        if reset_mode:
+            logger.info("--reset flag detected: deleting all existing sources.")
             await db.execute(delete(Source))
             await db.commit()
             logger.info("Deleted all existing sources.")
+            existing_names: set[str] = set()
+        else:
+            existing_names = {s.name for s in current}
 
-        # Insert humanitarian sources
+        # Upsert: insert only sources that don't exist yet
+        inserted = 0
+        skipped = 0
         for feed in HUMANITARIAN_SOURCES:
+            if feed["name"] in existing_names:
+                logger.info(f"  '{feed['name']}' already exists, skipping.")
+                skipped += 1
+                continue
+
             # Check Source model fields — add only fields that exist
             source = Source(
                 name=feed["name"],
@@ -183,9 +299,10 @@ async def seed():
                 source.tier = feed.get("tier", 2)
 
             db.add(source)
+            inserted += 1
 
         await db.commit()
-        logger.info(f"Inserted {len(HUMANITARIAN_SOURCES)} humanitarian sources.")
+        logger.info(f"Inserted {inserted} new source(s), skipped {skipped} existing.")
 
         # Confirm
         result = await db.execute(select(Source))
