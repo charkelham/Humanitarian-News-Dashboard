@@ -15,26 +15,38 @@ const topics = [
   { id: 'disease_outbreak', label: 'Disease Outbreak' },
   { id: 'natural_disaster', label: 'Natural Disaster' },
   { id: 'earthquake', label: 'Earthquake' },
-  { id: 'protection', label: 'Protection' },
-  { id: 'humanitarian_access', label: 'Humanitarian Access' },
-  { id: 'funding_coordination', label: 'Funding & Coordination' },
+  { id: 'humanitarian_response', label: 'Humanitarian Response' },
+  { id: 'protection', label: 'Protection & Human Rights' },
+  { id: 'early_warning', label: 'Early Warning' },
 ]
 
 const countries = [
   { code: 'all', name: 'All Countries' },
-  { code: 'US', name: 'United States' },
+  { code: 'SD', name: 'Sudan' },
+  { code: 'SS', name: 'South Sudan' },
+  { code: 'YE', name: 'Yemen' },
+  { code: 'PS', name: 'Gaza / Palestine' },
+  { code: 'CD', name: 'DR Congo' },
+  { code: 'ET', name: 'Ethiopia' },
+  { code: 'SO', name: 'Somalia' },
+  { code: 'AF', name: 'Afghanistan' },
+  { code: 'HT', name: 'Haiti' },
+  { code: 'MM', name: 'Myanmar' },
+  { code: 'ML', name: 'Mali' },
+  { code: 'UA', name: 'Ukraine' },
+  { code: 'SY', name: 'Syria' },
+  { code: 'LB', name: 'Lebanon' },
+  { code: 'IL', name: 'Israel' },
+  { code: 'IQ', name: 'Iraq' },
+  { code: 'LY', name: 'Libya' },
+  { code: 'NE', name: 'Niger' },
+  { code: 'CF', name: 'Central African Republic' },
+  { code: 'NG', name: 'Nigeria' },
+  { code: 'MZ', name: 'Mozambique' },
+  { code: 'BD', name: 'Bangladesh' },
   { code: 'GB', name: 'United Kingdom' },
-  { code: 'DE', name: 'Germany' },
-  { code: 'CN', name: 'China' },
-  { code: 'IN', name: 'India' },
-  { code: 'AU', name: 'Australia' },
-  { code: 'IT', name: 'Italy' },
-  { code: 'PL', name: 'Poland' },
-  { code: 'ES', name: 'Spain' },
-  { code: 'NO', name: 'Norway' },
-  { code: 'JP', name: 'Japan' },
-  { code: 'KR', name: 'South Korea' },
-  { code: 'CA', name: 'Canada' },
+  { code: 'US', name: 'United States' },
+  { code: 'FR', name: 'France' },
 ]
 
 const topicColorMap: { [key: string]: string } = {
@@ -44,9 +56,9 @@ const topicColorMap: { [key: string]: string } = {
   'disease_outbreak': 'bg-purple-600',
   'natural_disaster': 'bg-blue-600',
   'earthquake': 'bg-gray-700',
+  'humanitarian_response': 'bg-teal-600',
   'protection': 'bg-pink-600',
-  'humanitarian_access': 'bg-teal-600',
-  'funding_coordination': 'bg-indigo-600',
+  'early_warning': 'bg-indigo-600',
 }
 
 const topicLabelMap: { [key: string]: string } = {
@@ -56,9 +68,9 @@ const topicLabelMap: { [key: string]: string } = {
   'disease_outbreak': 'Disease Outbreak',
   'natural_disaster': 'Natural Disaster',
   'earthquake': 'Earthquake',
-  'protection': 'Protection',
-  'humanitarian_access': 'Humanitarian Access',
-  'funding_coordination': 'Funding & Coordination',
+  'humanitarian_response': 'Humanitarian Response',
+  'protection': 'Protection & Human Rights',
+  'early_warning': 'Early Warning',
 }
 
 export default function TopicsPage() {
