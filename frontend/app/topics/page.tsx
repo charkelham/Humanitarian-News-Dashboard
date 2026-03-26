@@ -7,6 +7,10 @@ import ArticleChat from '@/components/ArticleChat'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
+function stripHtml(text: string): string {
+  return text?.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() ?? ''
+}
+
 const topics = [
   { id: 'all', label: 'All' },
   { id: 'conflict', label: 'Conflict' },
@@ -224,7 +228,7 @@ export default function TopicsPage() {
 
                 {/* Summary */}
                 <p className="text-sm text-gray-600 line-clamp-3 mb-4 leading-relaxed">
-                  {article.summary || article.raw_summary || 'No summary available'}
+                  {stripHtml(article.summary || article.raw_summary || '') || 'No summary available'}
                 </p>
 
                 {/* Read More Button */}

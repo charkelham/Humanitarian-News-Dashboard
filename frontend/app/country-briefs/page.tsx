@@ -6,6 +6,10 @@ import { formatTimeAgo, formatDate } from '@/utils/time'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
+function stripHtml(text: string): string {
+  return text?.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() ?? ''
+}
+
 export default function CountryBriefsPage() {
   const [selectedCountry, setSelectedCountry] = useState('US')
   const [loadingBrief, setLoadingBrief] = useState(false)
@@ -143,7 +147,7 @@ export default function CountryBriefsPage() {
                   </div>
 
                   <p className="text-sm text-gray-600 line-clamp-3 mb-4 leading-relaxed">
-                    {article.summary || article.raw_summary || 'No summary available'}
+                    {stripHtml(article.summary || article.raw_summary || '') || 'No summary available'}
                   </p>
 
                   {/* Tags */}

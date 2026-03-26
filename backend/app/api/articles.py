@@ -2,6 +2,7 @@
 API endpoints for articles listing and filtering.
 """
 
+import re
 from typing import Optional, List
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, Query, HTTPException
@@ -19,6 +20,28 @@ from app.models.articles import (
 )
 
 router = APIRouter(prefix="/articles", tags=["articles"])
+
+
+def _strip_html(text: str) -> str:
+    """Remove HTML tags and decode common HTML entities."""
+    if not text:
+        return text
+    # Remove HTML tags
+    text = re.sub(r'<[^>]+>', ' ', text)
+    # Decode common entities
+    text = text.replace('&amp;', '&').replace('&lt;', '<').replace('&gt;', '>') \
+               .replace('&quot;', '"').replace('&#39;', "'").replace('&nbsp;', ' ')
+    # Collapse whitespace
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text
+
+
+def _is_clean_text(text: str, min_printable_ratio: float = 0.85) -> bool:
+    """Return False if text contains too many non-printable / replacement characters."""
+    if not text:
+        return False
+    printable = sum(1 for c in text if c.isprintable() and c != '\ufffd')
+    return (printable / len(text)) >= min_printable_ratio
 
 
 @router.get("", response_model=ArticleListResponse)
@@ -51,6 +74,7 @@ async def list_articles(
         Article.country_codes,
         Article.topic_tags,
         Article.content_text,
+        Article.raw_summary,
         Article.article_metadata,
         Source.name.label("source_name"),
     ).join(
@@ -97,10 +121,15 @@ async def list_articles(
     # Build response items
     items = []
     for row in rows:
-        # Extract summary (first 200 chars)
+        # Extract summary — strip HTML and guard against garbled encoded content
         summary = None
-        if row.content_text:
-            summary = row.content_text[:200] + "..." if len(row.content_text) > 200 else row.content_text
+        if row.content_text and _is_clean_text(row.content_text):
+            clean = _strip_html(row.content_text)
+            summary = clean[:200] + "..." if len(clean) > 200 else clean
+        elif row.raw_summary:
+            summary = _strip_html(row.raw_summary)
+            if summary:
+                summary = summary[:200] + "..." if len(summary) > 200 else summary
         
         # Extract image URL from metadata
         image_url = None
@@ -161,6 +190,7 @@ async def get_top_stories(
         Article.country_codes,
         Article.topic_tags,
         Article.content_text,
+        Article.raw_summary,
         Article.article_metadata,
         Source.name.label("source_name"),
     ).join(
@@ -227,10 +257,15 @@ async def get_top_stories(
         keyword_score = min(keyword_matches * 3, 30)  # Cap at 30
         score += keyword_score
         
-        # Extract summary
+        # Extract summary — strip HTML and guard against garbled encoded content
         summary = None
-        if row.content_text:
-            summary = row.content_text[:200] + "..." if len(row.content_text) > 200 else row.content_text
+        if row.content_text and _is_clean_text(row.content_text):
+            clean = _strip_html(row.content_text)
+            summary = clean[:200] + "..." if len(clean) > 200 else clean
+        elif row.raw_summary:
+            summary = _strip_html(row.raw_summary)
+            if summary:
+                summary = summary[:200] + "..." if len(summary) > 200 else summary
         
         # Extract image URL from metadata
         image_url = None

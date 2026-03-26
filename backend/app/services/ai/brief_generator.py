@@ -4,6 +4,7 @@ AI Brief Generation Service
 Generates country-specific humanitarian situation briefs from ingested articles.
 """
 
+import re
 from typing import List, Optional
 from dataclasses import dataclass
 from datetime import datetime, timedelta
@@ -12,6 +13,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models import Article
 from app.services.rag.chat_provider import ChatProvider
+
+
+def _strip_html(text: str) -> str:
+    """Remove HTML tags and decode common HTML entities."""
+    if not text:
+        return text
+    text = re.sub(r'<[^>]+>', ' ', text)
+    text = text.replace('&amp;', '&').replace('&lt;', '<').replace('&gt;', '>') \
+               .replace('&quot;', '"').replace('&#39;', "'").replace('&nbsp;', ' ')
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text
 
 
 @dataclass
@@ -198,7 +210,8 @@ class BriefGenerator:
             topics = article.topic_tags or []
             
             # Use content_text instead of content
-            content_preview = (article.content_text[:500] if article.content_text else article.raw_summary[:500]) if (article.content_text or article.raw_summary) else "No content available"
+            raw_preview = (article.content_text[:500] if article.content_text else article.raw_summary) if (article.content_text or article.raw_summary) else None
+            content_preview = _strip_html(raw_preview)[:500] if raw_preview else "No content available"
             
             # Build article summary
             summary = f"""
