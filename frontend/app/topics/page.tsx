@@ -76,10 +76,11 @@ const topicLabelMap: { [key: string]: string } = {
 export default function TopicsPage() {
   const [selectedTopic, setSelectedTopic] = useState('all')
   const [selectedCountry, setSelectedCountry] = useState('all')
+  const [days, setDays] = useState(7)
   const [isChatOpen, setIsChatOpen] = useState(false)
 
   const { data } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL}/articles?days=30&page_size=100`,
+    `${process.env.NEXT_PUBLIC_API_URL}/articles?days=${days}&page_size=100`,
     fetcher
   )
 
@@ -128,19 +129,33 @@ export default function TopicsPage() {
         </div>
 
         {/* Country Filter */}
-        <div>
-          <label className="text-xs font-semibold text-gray-500 uppercase mb-2 block">Countries</label>
-          <select
-            value={selectedCountry}
-            onChange={(e) => setSelectedCountry(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-          >
-            {countries.map((country) => (
-              <option key={country.code} value={country.code}>
-                {country.name}
-              </option>
-            ))}
-          </select>
+        <div className="flex items-center gap-3">
+          <div>
+            <label className="text-xs font-semibold text-gray-500 uppercase mb-2 block">Countries</label>
+            <select
+              value={selectedCountry}
+              onChange={(e) => setSelectedCountry(e.target.value)}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            >
+              {countries.map((country) => (
+                <option key={country.code} value={country.code}>
+                  {country.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="text-xs font-semibold text-gray-500 uppercase mb-2 block">Timeline</label>
+            <select
+              value={days}
+              onChange={(e) => setDays(Number(e.target.value))}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            >
+              <option value={1}>Last 24 hours</option>
+              <option value={7}>Last 7 days</option>
+              <option value={30}>Last 30 days</option>
+            </select>
+          </div>
         </div>
       </div>
 
