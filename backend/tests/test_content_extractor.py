@@ -115,7 +115,7 @@ async def test_fetch_html_success():
     extractor = ContentExtractor(timeout=10)
     
     mock_response = AsyncMock()
-    mock_response.text = "<html><body>Test content</body></html>"
+    mock_response.content = b"<html><body>Test content</body></html>"
     mock_response.status_code = 200
     mock_response.raise_for_status = AsyncMock()
     
@@ -200,7 +200,7 @@ async def test_polite_headers():
     extractor = ContentExtractor(timeout=10, user_agent="TestBot/1.0")
     
     mock_response = AsyncMock()
-    mock_response.text = "<html>content</html>"
+    mock_response.content = b"<html>content</html>"
     mock_response.status_code = 200
     mock_response.raise_for_status = AsyncMock()
     

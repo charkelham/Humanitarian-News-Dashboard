@@ -2,6 +2,7 @@
 Article content extraction using readability-lxml and BeautifulSoup.
 """
 
+import re
 import httpx
 from typing import Optional, Tuple
 from bs4 import BeautifulSoup
@@ -110,14 +111,44 @@ class ContentExtractor:
             async with httpx.AsyncClient(timeout=self.timeout, follow_redirects=True) as client:
                 response = await client.get(resolved_url, headers=headers)
                 response.raise_for_status()
-                
-                # Ensure proper text decoding
-                # Try to use the encoding specified in the response, fallback to utf-8
-                if response.encoding:
-                    return response.text
-                else:
-                    # Force UTF-8 decoding if no encoding specified
-                    return response.content.decode('utf-8', errors='replace')
+
+                raw_bytes = response.content
+
+                # 1. Try strict UTF-8 first (covers >90% of modern sites)
+                try:
+                    return raw_bytes.decode('utf-8')
+                except UnicodeDecodeError:
+                    pass
+
+                # 2. Sniff charset from HTML <meta> tag in the raw bytes
+                meta_charset = None
+                head_bytes = raw_bytes[:4096]
+                for pattern in (
+                    rb'<meta[^>]+charset=["\']?([A-Za-z0-9_\-]+)',
+                    rb'<meta[^>]+content=["\'][^"\']*charset=([A-Za-z0-9_\-]+)',
+                ):
+                    m = re.search(pattern, head_bytes, re.IGNORECASE)
+                    if m:
+                        meta_charset = m.group(1).decode('ascii', errors='ignore').strip()
+                        break
+
+                if meta_charset:
+                    try:
+                        return raw_bytes.decode(meta_charset, errors='replace')
+                    except (LookupError, UnicodeDecodeError):
+                        pass
+
+                # 3. Try chardet if available
+                try:
+                    import chardet
+                    detected = chardet.detect(raw_bytes)
+                    encoding = detected.get('encoding') or 'utf-8'
+                    return raw_bytes.decode(encoding, errors='replace')
+                except ImportError:
+                    pass
+
+                # 4. Final fallback
+                return raw_bytes.decode('utf-8', errors='replace')
         except httpx.HTTPStatusError as e:
             raise ContentExtractionError(f"HTTP {e.response.status_code}: {resolved_url}") from e
         except httpx.TimeoutException as e:
