@@ -2,6 +2,7 @@
 RAG chat service for answering questions using retrieved context.
 """
 
+import re
 from typing import List, Dict, Any, Optional
 from dataclasses import dataclass
 from datetime import datetime
@@ -14,6 +15,17 @@ from app.services.rag.chat_provider import ChatProvider
 from app.services.rag.embedding_provider import EmbeddingProvider
 from app.services.nlp.topic_data import TOPIC_KEYWORDS
 from app.services.nlp.country_data import detect_countries_in_text
+
+
+def _strip_html(text: str) -> str:
+    """Remove HTML tags and decode common HTML entities."""
+    if not text:
+        return text
+    text = re.sub(r'<[^>]+>', ' ', text)
+    text = text.replace('&amp;', '&').replace('&lt;', '<').replace('&gt;', '>') \
+               .replace('&quot;', '"').replace('&#39;', "'").replace('&nbsp;', ' ')
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text
 
 
 @dataclass
@@ -366,7 +378,7 @@ Now answer the user's question by combining the latest news from the context abo
         """Helper to generate response from a list of articles (fallback)."""
         context_parts = []
         for i, article in enumerate(articles[:5], start=1):
-            content_snippet = article.content_text[:400] if article.content_text else article.raw_summary or "No content available"
+            content_snippet = article.content_text[:400] if article.content_text else _strip_html(article.raw_summary or "") or "No content available"
             context_parts.append(
                 f"[{i}] {article.title}\n"
                 f"Published: {article.published_at.strftime('%Y-%m-%d') if article.published_at else 'Unknown'}\n"

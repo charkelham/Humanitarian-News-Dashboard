@@ -7,6 +7,10 @@ import ArticleChat from '@/components/ArticleChat'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
+function stripHtml(text: string): string {
+  return text?.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() ?? ''
+}
+
 export default function Dashboard() {
   const [days, setDays] = useState(7)
   const [selectedCountry, setSelectedCountry] = useState('SD')
@@ -205,7 +209,7 @@ export default function Dashboard() {
                     {featuredStory.title}
                   </h2>
                   <p className="text-gray-600 text-sm leading-relaxed">
-                    {featuredStory.summary}
+                    {stripHtml(featuredStory.summary || '')}
                   </p>
                   {featuredStory.country_codes?.length > 0 && (
                     <div className="mt-4 flex gap-2 flex-wrap">
