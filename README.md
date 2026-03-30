@@ -1,125 +1,118 @@
-# Energy Transition Intelligence (ETI)
+# 🌍 Humanitarian News Dashboard
 
-A complete news aggregation and analysis platform for the energy transition sector. Ingests RSS feeds, enriches content with AI-powered tagging, provides vector search, and offers a RAG chatbot with citations.
-
-## 🎯 Features
-
-- 📰 **Automated RSS Ingestion**: 30-minute scheduled fetching from multiple sources
-- 🌍 **Smart Enrichment**: 
-  - 50+ country detection (ISO-3166 codes)
-  - 11 energy transition topic classification
-  - Language detection
-  - Full-text extraction (readability-lxml)
-- 🔍 **Vector Search**: pgvector with OpenAI embeddings (text-embedding-3-small)
-- 💬 **RAG Chatbot**: 
-  - Context-grounded answers with citations
-  - Confidence-based abstention
-  - Filter by country, topic, date
-- 📊 **Dashboard**: 
-  - Top stories ranking (recency + source tier + keywords)
-  - Country sidebar with counts
-  - Topic and date filters
-  - Real-time chat panel
-- 🔄 **Background Worker**: APScheduler running every 30 minutes
-
-## 🏗️ Tech Stack
-
-- **Backend**: FastAPI (Python 3.11+) with async SQLAlchemy 2.0
-- **Database**: Supabase (PostgreSQL 16 + pgvector)
-- **Embeddings**: OpenAI text-embedding-3-small (1536 dimensions)
-- **Chat**: OpenAI gpt-4o-mini
-- **Frontend**: Next.js 14 with Tailwind CSS & SWR
-- **Scheduler**: APScheduler
-- **Deployment**: Docker Compose
-
-## ⚠️ SETUP REQUIRED BEFORE TESTING
-
-### 1. Get Your Supabase Database Password
-
-**Go to**: https://supabase.com/dashboard/project/tujrzlxbckqyuwqrylck/settings/database
-
-- Copy your database password (or reset it)
-- Edit `.env` file
-- Replace `[YOUR-DB-PASSWORD]` with your actual password
-
-### 2. Enable pgvector Extension
-
-**Go to**: https://supabase.com/dashboard/project/tujrzlxbckqyuwqrylck/database/extensions
-
-- Search for "vector"
-- Click to enable the `vector` extension
-
-### 3. Run Database Migrations
-
-```powershell
-# Temporarily change .env DATABASE_URL to direct connection (port 5432)
-# From: ...pooler.supabase.com:6543...?pgbouncer=true
-# To:   ...db.tujrzlxbckqyuwqrylck.supabase.co:5432...
-
-cd backend
-poetry install
-poetry run alembic upgrade head
-cd ..
-
-# Change .env back to pooler connection
-```
-
-## 🚀 Quick Start
-
-```powershell
-# Start all services
-docker compose up -d
-
-# Check status
-docker compose ps
-
-# Create your first source
-$body = @{
-    name = "Reuters Energy"
-    rss_url = "https://www.reuters.com/technology/energy/"
-    enabled = $true
-} | ConvertTo-Json
-
-Invoke-WebRequest -Uri http://localhost:8000/sources -Method POST -Body $body -ContentType "application/json"
-
-# Run manual ingestion
-docker compose exec backend python -m app.ingest.run_once
-
-# Open frontend
-Start-Process http://localhost:3000
-```
-
-## 📚 Documentation
-
-- **[QUICKSTART.md](QUICKSTART.md)** - Step-by-step setup guide
-- **[SUPABASE_SETUP.md](SUPABASE_SETUP.md)** - Supabase configuration details
-- **[TESTING_CHECKLIST.md](TESTING_CHECKLIST.md)** - Comprehensive testing plan
-- **[PROCESS_LOG.md](PROCESS_LOG.md)** - Development session log
-- **[backend/INGESTION_WORKER.md](backend/INGESTION_WORKER.md)** - Worker documentation
-
-## 🔧 Project Structure
-
-```
-backend/
-  api/          # FastAPI routes
-  db/           # Database models & connections
-  models/       # Pydantic schemas
-  services/
-    ingest/     # RSS parsing & extraction
-    nlp/        # Enrichment (language, country, topics)
-    rag/        # Vector search & chat
-  tests/        # Unit & integration tests
-frontend/       # TBD
-```
-
-## Setup
-
-(Coming soon)
-
-## Development Status
-
-🚧 **In Active Development** - MVP Phase
+A real-time humanitarian crisis monitoring platform built for analysts and policy professionals. The dashboard ingests articles from leading humanitarian sources, enriches them with NLP, and surfaces AI-generated situation briefs and a RAG-powered chat assistant.
 
 ---
 
-Built for the energy transition community 🌱
+## ✨ Features
+
+- 📡 **Live ingestion** from OCHA, ReliefWeb, MSF, ICRC, Al Jazeera, BBC, Reuters and more
+- 🗺️ **Country-filtered dashboard** — Sudan, Yemen, Gaza, DRC, Ethiopia, Somalia and 10+ more
+- 🏷️ **NLP topic tagging** — conflict, displacement, famine, disease outbreak, natural disaster, and early warning
+- 📰 **Topics feed** — filterable grid of articles by topic and country with timeline selector
+- 🤖 **AI Situation Briefs** — GPT-4 powered analysis written for humanitarian professionals
+- 💬 **RAG Chat Assistant** — ask questions about recent articles, grounded in your ingested data
+- 🗄️ **pgvector semantic search** — embeddings stored in PostgreSQL for retrieval-augmented generation
+
+---
+
+## 🛠 Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | Next.js 14, TypeScript, Tailwind CSS, SWR |
+| Backend | FastAPI, Python 3.11, SQLAlchemy (async) |
+| Database | PostgreSQL 16 + pgvector extension |
+| AI | OpenAI GPT-4, text-embedding-ada-002 |
+| Ingestion | RSS/Atom feeds, httpx, readability-lxml, BeautifulSoup |
+| NLP | langdetect, custom topic classifier |
+| Deployment | Docker, Railway |
+
+---
+
+## 📁 Project Structure
+
+```
+Humanitarian-News-Dashboard/
+├── frontend/               # Next.js application
+│   ├── app/
+│   │   ├── page.tsx        # Main dashboard
+│   │   ├── topics/         # Topics feed
+│   │   ├── country-briefs/ # Country intelligence
+│   │   └── feed-manager/   # Source management
+│   └── components/
+│       ├── Sidebar.tsx
+│       └── ArticleChat.tsx # RAG chat component
+└── backend/                # FastAPI application
+    └── app/
+        ├── api/            # REST endpoints
+        ├── db/             # Models & session
+        ├── models/         # Pydantic schemas
+        └── services/
+            ├── ingest/     # RSS ingestion & content extraction
+            ├── nlp/        # Topic tagging & language detection
+            └── rag/        # Chat & retrieval service
+```
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Python 3.11+, Poetry
+- Node.js 18+
+- PostgreSQL 16 with [pgvector](https://github.com/pgvector/pgvector)
+- OpenAI API key
+
+### Backend
+
+```bash
+cd backend
+poetry install
+cp .env.example .env   # add your OPENAI_API_KEY and DATABASE_URL
+alembic upgrade head
+uvicorn app.main:app --reload
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+cp .env.local.example .env.local   # set NEXT_PUBLIC_API_URL=http://localhost:8000
+npm run dev
+```
+
+Or run everything with Docker:
+
+```bash
+docker-compose up
+```
+
+API docs available at `http://localhost:8000/docs`
+
+---
+
+## 📡 Key API Endpoints
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /articles` | Paginated article list with country/topic/date filters |
+| `GET /articles/top-stories` | Ranked top stories for a country |
+| `GET /briefs/latest` | Generate AI situation brief |
+| `POST /chat` | RAG chat endpoint |
+| `GET /stats/topic-breakdown` | Crisis type distribution |
+| `GET /stats/activity` | Article activity over time |
+
+---
+
+## 🌐 Data Sources
+
+OCHA · ReliefWeb · MSF · ICRC · Al Jazeera · BBC News · Reuters · The Guardian · UN News · Human Rights Watch · Amnesty International · France 24 · Deutsche Welle · AP News
+
+---
+
+## 📄 License
+
+MIT
