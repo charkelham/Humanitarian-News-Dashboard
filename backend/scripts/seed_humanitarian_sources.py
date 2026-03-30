@@ -250,6 +250,71 @@ HUMANITARIAN_SOURCES = [
         "tier": 2,
         "enabled": True,
     },
+
+    # ── Additional UN feeds (from FeedSpot) ──────────────────────────────────────
+    {
+        "name": "UN Peacekeeping",
+        "rss_url": "https://peacekeeping.un.org/en/rss.xml",
+        "type": "rss",
+        "tier": 1,
+        "enabled": True,
+    },
+    {
+        "name": "UNFPA",
+        "rss_url": "https://www.unfpa.org/rss.xml",
+        "type": "rss",
+        "tier": 1,
+        "enabled": True,
+    },
+    {
+        "name": "UNMAS",
+        "rss_url": "https://www.unmas.org/en/rss.xml",
+        "type": "rss",
+        "tier": 1,
+        "enabled": True,
+    },
+    {
+        "name": "UN News – All",
+        "rss_url": "https://news.un.org/feed/subscribe/en/news/all/rss.xml",
+        "type": "rss",
+        "tier": 1,
+        "enabled": True,
+    },
+    {
+        "name": "UN News – Human Rights",
+        "rss_url": "https://news.un.org/feed/subscribe/en/news/topic/human-rights/rss.xml",
+        "type": "rss",
+        "tier": 1,
+        "enabled": True,
+    },
+    {
+        "name": "UN News – Climate Change",
+        "rss_url": "https://news.un.org/feed/subscribe/en/news/topic/climate-change/rss.xml",
+        "type": "rss",
+        "tier": 1,
+        "enabled": True,
+    },
+    {
+        "name": "UN News – Middle East",
+        "rss_url": "https://news.un.org/feed/subscribe/en/news/topic/middle-east/rss.xml",
+        "type": "rss",
+        "tier": 1,
+        "enabled": True,
+    },
+    {
+        "name": "UN News – Women",
+        "rss_url": "https://news.un.org/feed/subscribe/en/news/topic/women/rss.xml",
+        "type": "rss",
+        "tier": 1,
+        "enabled": True,
+    },
+    {
+        "name": "UNCCD",
+        "rss_url": "https://www.unccd.int/rss.xml",
+        "type": "rss",
+        "tier": 1,
+        "enabled": True,
+    },
 ]
 
 
