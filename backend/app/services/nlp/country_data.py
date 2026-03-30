@@ -2,10 +2,8 @@
 Country reference data for tagging.
 Maps country names, demonyms, cities, and abbreviations to ISO-3166 alpha-2 codes.
 
-Changes from ETI version:
-  - Added humanitarian-priority countries (Somalia, Sudan, DRC, Yemen, etc.)
-  - Expanded REGION_KEYWORDS with humanitarian geographic groupings
-  - Added HUMANITARIAN_REGIONS for dashboard filtering
+Includes humanitarian-priority countries (Somalia, Sudan, DRC, Yemen, etc.)
+with expanded REGION_KEYWORDS and HUMANITARIAN_REGIONS for dashboard filtering.
 """
 
 from typing import Dict, List, Set

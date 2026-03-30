@@ -5,24 +5,24 @@ services:
   # Local postgres service commented out - enable only if you want local testing
   # postgres:
   #   image: pgvector/pgvector:pg16
-  #   container_name: eti_postgres
+  #   container_name: hnd_postgres
   #   environment:
-  #     POSTGRES_USER: ${POSTGRES_USER:-eti_user}
-  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-eti_password}
-  #     POSTGRES_DB: ${POSTGRES_DB:-eti_db}
+  #     POSTGRES_USER: ${POSTGRES_USER:-hnd_user}
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hnd_password}
+  #     POSTGRES_DB: ${POSTGRES_DB:-hnd_db}
   #   ports:
   #     - "5432:5432"
   #   volumes:
   #     - postgres_data:/var/lib/postgresql/data
   #   healthcheck:
-  #     test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-eti_user} -d ${POSTGRES_DB:-eti_db}"]
+  #     test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hnd_user} -d ${POSTGRES_DB:-hnd_db}"]
   #     interval: 10s
   #     timeout: 5s
   #     retries: 5
 
   redis:
     image: redis:7-alpine
-    container_name: eti_redis
+    container_name: hnd_redis
     ports:
       - "6379:6379"
     volumes:
@@ -35,7 +35,7 @@ services:
 
   backend:
     build: ./backend
-    container_name: eti_backend
+    container_name: hnd_backend
     ports:
       - "8000:8000"${DATABASE_URL}
       REDIS_URL: redis://redis:6379/0
@@ -54,7 +54,7 @@ services:
 
   worker:
     build: ./backend
-    container_name: eti_worker
+    container_name: hnd_worker
     environment:
       DATABASE_URL: ${DATABASE_URL}
       REDIS_URL: redis://redis:6379/0
@@ -74,7 +74,7 @@ services:
 
   frontend:
     build: ./frontend
-    container_name: eti_frontend
+    container_name: hnd_frontend
     ports:
       - "3000:3000"
     environment:

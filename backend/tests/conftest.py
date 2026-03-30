@@ -14,7 +14,7 @@ from app.main import app
 
 
 # Test database URL (use a separate test database)
-TEST_DATABASE_URL = "postgresql+asyncpg://eti_user:eti_password@localhost:5432/eti_test_db"
+TEST_DATABASE_URL = "postgresql+asyncpg://hnd_user:hnd_password@localhost:5432/hnd_test_db"
 
 
 @pytest.fixture(scope="session")

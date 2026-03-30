@@ -43,7 +43,7 @@ async def scheduled_ingestion_job():
 async def main():
     """Main worker process."""
     logger.info("=" * 80)
-    logger.info("Starting ETI Ingestion Worker")
+    logger.info("Starting Humanitarian News Dashboard Ingestion Worker")
     logger.info("=" * 80)
     logger.info("Schedule: Every 30 minutes")
     logger.info("Press Ctrl+C to stop")

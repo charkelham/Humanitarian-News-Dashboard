@@ -45,7 +45,7 @@ export default function CountryBriefsPage() {
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Country Intelligence</h1>
             <p className="text-gray-500 text-sm mt-0.5">
-              Deep dive into regional energy transition developments.
+              Deep dive into regional humanitarian crisis developments.
             </p>
           </div>
           <select
@@ -102,7 +102,7 @@ export default function CountryBriefsPage() {
               {brief.error}
             </div>
           ) : (
-            <p className="text-gray-500 text-sm">Click "Generate Brief" to create an AI-powered summary of recent {selectedCountry} energy developments.</p>
+            <p className="text-gray-500 text-sm">Click "Generate Brief" to create an AI-powered summary of recent {selectedCountry} humanitarian developments.</p>
           )}
         </div>
 

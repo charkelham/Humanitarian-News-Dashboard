@@ -1,3 +1,3 @@
 """
-Test suite for ETI backend.
+Test suite for Humanitarian News Dashboard backend.
 """

@@ -1,5 +1,5 @@
 """
-SQLAlchemy models for ETI application.
+SQLAlchemy models for Humanitarian News Dashboard.
 """
 
 from datetime import datetime
@@ -53,7 +53,7 @@ class Article(Base):
     language = Column(String(10), nullable=True)  # ISO 639-1 code
     hash = Column(String(64), nullable=True, index=True)  # Content hash for deduplication
     country_codes = Column(ARRAY(String), nullable=True)  # ISO 3166-1 alpha-2 codes
-    topic_tags = Column(ARRAY(String), nullable=True)  # Energy transition topics
+    topic_tags = Column(ARRAY(String), nullable=True)  # Humanitarian crisis topics
     
     # Vector embedding for RAG
     embedding = Column(Vector(1536), nullable=True)  # OpenAI text-embedding-3-small dimension
