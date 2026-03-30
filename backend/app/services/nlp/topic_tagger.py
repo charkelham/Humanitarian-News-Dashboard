@@ -1,5 +1,5 @@
 """
-Topic tagging service for energy transition articles.
+Topic tagging service for humanitarian news articles.
 """
 
 import re
@@ -11,7 +11,7 @@ from app.services.nlp.topic_data import TOPIC_KEYWORDS, get_all_topics
 
 class TopicTagger:
     """
-    Tags articles with energy transition topics using keyword matching.
+    Tags articles with humanitarian crisis topics using keyword matching.
     """
     
     def __init__(self, max_topics: int = 3):
@@ -122,7 +122,7 @@ class TopicTagger:
         content: str = None,
     ) -> List[str]:
         """
-        Tag article with energy transition topics.
+        Tag article with humanitarian crisis topics.
         
         Args:
             title: Article title

@@ -1,10 +1,5 @@
-
-
 """
 Topic taxonomy data for humanitarian crisis news tagging.
- 
-Replaces energy transition topics with crisis type classification.
-Designed for FCDO / HEROS early warning use.
  
 Each entry follows the same format as the original:
     topic_id -> (positive_keywords, negative_keywords)

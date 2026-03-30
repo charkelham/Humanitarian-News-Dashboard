@@ -1,8 +1,8 @@
 .PHONY: help up down logs restart ps migrate test shell db-shell clean
 
 help:
-	@echo "ETI Project Makefile Commands"
-	@echo "=============================="
+	@echo "Humanitarian News Dashboard - Makefile Commands"
+	@echo "========================================="
 	@echo "up          - Start all services (detached)"
 	@echo "down        - Stop and remove all containers"
 	@echo "logs        - Follow logs from all services"
@@ -52,7 +52,7 @@ shell:
 	docker-compose exec backend /bin/bash
 
 db-shell:
-	docker-compose exec postgres psql -U eti_user -d eti_db
+	docker-compose exec postgres psql -U hnd_user -d hnd_db
 
 clean:
 	docker-compose down -v --rmi local

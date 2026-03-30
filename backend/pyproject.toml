@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "eti-backend"
+name = "humanitarian-dashboard-backend"
 version = "0.1.0"
-description = "Energy Transition Intelligence - Backend API"
+description = "Humanitarian News Dashboard - Backend API"
 authors = ["Your Name <you@example.com>"]
 readme = "README.md"
 

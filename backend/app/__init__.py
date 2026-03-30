@@ -1,5 +1,5 @@
 """
-ETI Backend Application
+Humanitarian News Dashboard Backend
 """
 
 __version__ = "0.1.0"

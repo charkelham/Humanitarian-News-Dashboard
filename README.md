@@ -1,5 +1,7 @@
 # 🌍 Humanitarian News Dashboard
 
+🌐 **Live Demo**: https://steadfast-light-production-b4f8.up.railway.app
+
 A real-time humanitarian crisis monitoring platform built for analysts and policy professionals. The dashboard ingests articles from leading humanitarian sources, enriches them with NLP, and surfaces AI-generated situation briefs and a RAG-powered chat assistant.
 
 ---

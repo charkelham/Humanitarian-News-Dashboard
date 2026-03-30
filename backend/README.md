@@ -1,6 +1,6 @@
-# ETI Backend
+# Humanitarian News Dashboard - Backend
 
-FastAPI backend for Energy Transition Intelligence platform.
+FastAPI backend for Humanitarian News Dashboard platform.
 
 ## Setup
 

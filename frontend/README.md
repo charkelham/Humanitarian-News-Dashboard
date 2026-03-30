@@ -1,12 +1,13 @@
-# Energy Transition Intelligence - Frontend
+# Humanitarian News Dashboard - Frontend
 
-A clean, minimal Next.js dashboard for energy transition news aggregation and RAG chat.
+A clean, minimal Next.js dashboard for humanitarian crisis news monitoring and AI-powered analysis.
 
 ## Features
 
-- **Left Sidebar**: Country list with article counts
-- **Main Panel**: Top stories with ranking scores, filters by topic and date range
+- **Left Sidebar**: Country list with article counts for crisis-affected regions
+- **Main Panel**: Top stories with ranking scores, filters by humanitarian topic and date range
 - **Right Panel**: RAG chat interface with citation links
+- **Country Briefs**: AI-generated situation briefs per country covering conflict, displacement, famine, and more
 - **Real-time Data**: SWR for automatic data fetching and caching
 - **Responsive Design**: Tailwind CSS for clean, minimal styling
 
